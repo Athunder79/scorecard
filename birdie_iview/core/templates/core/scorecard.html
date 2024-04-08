@@ -1,0 +1,220 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+{% csrf_token %}
+
+
+{% if user.is_authenticated %}
+
+<h1 class="hole-heading">Hole <span id="current-hole">{{ hole_num }}</span></h1>
+{% if shot.shot_distance is not None or current_shot is 1 %}
+<h2 class="shot-heading">Shot: {{ current_shot }}</h2>
+<h3 class="last-shot">Last Shot:&nbsp;&nbsp;{{shot.club}} - {{ shot.shot_distance }}yrds</h3>
+{% endif %}
+<!-- <h2>Par: {{ hole_par }}</h2>
+<h2>Hole Distance: {{ hole_distance }}</h2> -->
+
+<p class="warning" id="result"></p>
+{% if shot.shot_distance is not None or current_shot is 1 %}
+<form id="shotForm" method="POST">
+    {% csrf_token %}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4"></legend>
+        {{ form|crispy }}
+    </fieldset>
+    <div class="d-grid gap-2  mx-auto">
+        <button id="location" class="btn btn-primary add-shot-button" type="button">Take Shot</button>
+    </div>
+    <br>
+</form>
+{% endif %}
+
+{% if shot.shot_distance is None and current_shot != 1  %}
+<form id="endShot"
+    action="{% url 'end-of-shot' course_id=current_hole.course.id round_id=current_hole.round.id hole_id=current_hole.id %}"
+    method="POST">
+    {% csrf_token %}
+    <div class="d-grid gap-2  mx-auto">
+        <input type="hidden" id="end_shot_latitude" name="end_shot_latitude" value="">
+        <input type="hidden" id="end_shot_longitude" name="end_shot_longitude" value="">
+        <button id="at-my-ball" class="btn btn-primary at-ball-button" type="button">I'm at my ball</button>
+    </div>
+    <br>
+</form>
+
+<div class="or">
+    <p>OR</p>
+</div>
+
+
+<!-- return to hole-details to enter next hole and add end coordinates to last shot  -->
+<form id="endHole"
+    action="{% url 'next-hole' course_id=current_hole.course.id round_id=current_hole.round.id hole_id=current_hole.id %}"
+    method="POST">
+    {% csrf_token %}
+    <div class="d-grid gap-2 mx-auto">
+        <input type="hidden" id="end_latitude" name="end_latitude" value="">
+        <input type="hidden" id="end_longitude" name="end_longitude" value="">
+        <button id="next-hole" class="btn btn-primary in-hole-button" type="button">In The Hole!</button>
+    </div>
+    <br>
+</form>
+
+{% endif %}
+
+<!-- button to show or hide the map -->
+
+<div id="toggle-map" class="d-grid gap-2 mx-auto">
+    <button id="show-map" class="btn btn-primary show-map-button" type="button">Show Map</button>
+</div>
+
+
+<!-- Shot Map -->
+<div id="map-container" class="linkholder hide">
+    <div class="mapholder">
+        <div id="map"></div>
+        <script>
+            const roundId = {{ round_id }};
+            const mapShotsUrl = "{% url 'map-shots' %}";
+        </script>
+        <script src="{% static 'script/map.js' %}"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&loading=async&callback=initMap"></script>
+    </div>
+</div>
+
+<!-- Scorecard table -->
+
+<div class="scorecard">
+    <table class="tables">
+        <caption>
+            <h2>Front 9</h2>
+        </caption>
+        <tbody>
+            <tr>
+                <th scope="col">Hole</th>
+                {% for hole in holes|slice:":9" %}
+                <th scope="col">{{ hole.hole_num }}</th>
+                {% endfor %}
+                <th scope="col">In</th>
+            </tr>
+            <tr>
+                <td>Dist</td>
+                {% for hole in holes|slice:":9" %}
+                <td>{{ hole.hole_distance }}</td>
+                {% endfor %}
+                <td id="totalFrontDist">{{ in_total_dist }}</td>
+
+            </tr>
+            <tr>
+                <td>Par</td>
+                {% for hole in holes|slice:":9" %}
+                <td id="par{{ hole.hole_num }}">{{ hole.hole_par }}</td>
+                {% endfor %}
+                <td id="totalFrontPar">{{ in_total_par }}</td>
+            </tr>
+            <tr>
+                <td>Shots</td>
+                {% for hole in holes|slice:":9" %}
+                <td id="scor{{ hole.hole_num }}">{{ hole.shot_count }}</td>
+                {% endfor %}
+
+                <td id="totalFrontScor">{{ in_total_shots }}</td>
+            </tr>
+            <tr>
+                <td>Score</td>
+                {% for running_score in running_scores|slice:":9" %}
+                <td>{{ running_score }}</td>
+                {% endfor %}
+                <td id="totalFrontOU">{{ in_total_score }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if hole_num > 9 %}
+    <table class="back9heading tables">
+        <caption>
+            <h2>Back 9</h2>
+        </caption>
+        <tbody>
+            <tr>
+                <th scope="col">Hole</th>
+                {% for hole in holes|slice:"9:" %}
+                <th scope="col">{{ hole.hole_num }}</th>
+                {% endfor %}
+
+                <th scope="col">Out</th>
+            </tr>
+            <tr>
+                <td>Dist</td>
+                {% for hole in holes|slice:"9:" %}
+                <td>{{ hole.hole_distance }}</td>
+                {% endfor %}
+                <td id="totalBkDis">{{ out_total_dist }}</td>
+            </tr>
+            <tr>
+                <td>Par</td>
+                {% for hole in holes|slice:"9:" %}
+                <td id="par{{ hole.hole_num }}">{{ hole.hole_par }}</td>
+                {% endfor %}
+                <td id="totalBkPar">{{ out_total_par }}</td>
+            </tr>
+            <tr>
+                <td>Shots</td>
+                {% for hole in holes|slice:"9:" %}
+                <td id="scor{{ hole.hole_num }}" class="shot-cell">{{ hole.shot_count }}</td>
+                {% endfor %}
+                <td id="totalBkScor">{{ out_total_shots }}</td>
+            </tr>
+            <tr>
+                <td>Score</td>
+                {% for running_score in running_scores_back_nine %}
+                <td>{{ running_score }}</td>
+                {% endfor %}
+                <td id="totalBkOu">{{ out_total_score }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+    <table class="tableTotal">
+        <caption>
+            <h2>Total Round Score</h2>
+        </caption>
+
+        <tbody>
+            <tr>
+                <th scope="colgroup" colspan="2"></th>
+            </tr>
+            <tr>
+                <td>Total Distance</td>
+                <td id="totalRndDis">{{ total_distance }}</td>
+            </tr>
+            <tr>
+                <td>Course Par</td>
+                <td id="totalRndPar">{{ total_par }}</td>
+            </tr>
+            <tr>
+                <td>Total Shots</td>
+                <td id="totalRndScor">{{ total_shots }}</td>
+            </tr>
+            <tr>
+                <td>Total Score</td>
+                <td id="totalRndOu">{{ total_score }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<form action="{% url 'finish-round' round_id=current_hole.round.id %}" method="POST">
+    {% csrf_token %}
+    <div class="d-grid gap-2 mx-auto">
+        <button class="btn btn-primary finish-round-button" type="submit">Finish Round Early</button>
+    </div>
+</form>
+
+
+
+
+{% endif %}
+
+{% endblock %}

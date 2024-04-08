@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% csrf_token %}
+
+<div class="content-section">
+        <h2>Start Round</h2>
+
+    <form id="roundForm" method="POST">
+        {% csrf_token %}
+
+        {{ form|crispy}}
+    <button type="submit" class="btn btn-primary">Start Round</button>
+    </form>
+<div class="content-section">
+    <p>Course not here?</p>
+    <a  href="{% url 'find-golf-courses' %}">Find a Golfcourse near you</a>
+</div>
+
+</div>
+
+{% endblock %}

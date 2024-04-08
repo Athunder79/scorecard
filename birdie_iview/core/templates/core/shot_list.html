@@ -1,0 +1,58 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% csrf_token %}
+
+<title>Scorecard</title>
+</head>
+<body>
+
+<h1>Scorecard</h1>
+
+
+
+<!-- Submit Shot Form -->
+<h2>Submit Shot</h2>
+<form id="shotForm" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button id="location" name="submit_shot" class="btn btn-outline-info" type="button">Take Shot</button>
+</form>
+
+
+
+<!-- Scorecard Table -->
+{% if object_list %}
+    <h2>Scorecard Table</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Round Date</th>
+                <th>Course Name</th>
+                <th>Hole Num</th>
+                <th>Shot Num</th>
+                <th>Club</th>
+                <th>Shot Distance</th>
+                <th>Result</th>
+                <th>Round ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for shot in object_list %}
+            <tr>
+                <td>{{ shot.round.round_date }}</td>
+                <td>{{ shot.course.name }}</td>
+                <td>{{ shot.hole_num }}</td>
+                <td>{{ shot.shot_num_per_hole }}</td>
+                <td>{{ shot.club }}</td>
+                <td>{{ shot.shot_distance }}</td>
+                <td>{{ shot.result }}</td>
+                <td>{{ shot.round_id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No shots recorded yet.</p>
+{% endif %}
+{% endblock %}

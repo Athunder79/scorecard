@@ -1,0 +1,72 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% csrf_token %}
+
+<div id="map"></div>
+<div class="content-section">
+<div id="golf-courses">
+    <h2>Golf Courses Near You</h2>
+    </div>
+    <ul>
+        {% for course in golf_courses %}
+        <li>
+            <div class="content-section">
+            <strong>{{ course.name }}</strong><br>
+            Address: {{ course.address }}<br>
+            Rating: {% if course.rating %}{{ course.rating }}{% else %}N/A{% endif %}<br>
+            Distance: {{ course.distance }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+<!-- Load Google Maps JavaScript API -->
+<script async src="https://maps.googleapis.com/maps/api/js?key={{key}}&loading=async&callback=initMap">
+</script>
+
+<script>
+    function initMap() {
+        // get user's current location from the view
+        var pos = {
+            lat: {{ user_lat }},
+            lng: {{ user_lng }}
+        };
+
+        // Create a map centered on the user's location
+        var infowindow = new google.maps.InfoWindow();
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: pos,
+            zoom: 12
+        });
+
+        // Add a marker for the user's location
+        var marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            title: 'You are here'
+        });
+
+        // Add markers for golf courses
+        var golfCourses = [
+            {% for course in golf_courses %}
+                {
+                    name: "{{ course.name }}",
+                    location: { lat: {{ course.latitude }}, lng: {{ course.longitude }} }
+                },
+            {% endfor %}
+        ];
+
+        golfCourses.forEach(function (course) {
+            var marker = new google.maps.Marker({
+                position: course.location,
+                map: map,
+                title: course.name
+            });
+        });
+    }
+</script>
+
+{% endblock %}
