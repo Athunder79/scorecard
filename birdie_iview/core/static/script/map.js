@@ -3,7 +3,7 @@ $(document).ready(function () {
         url: mapShotsUrl,
         method: 'GET',
         success: function (data) {
-            console.log(data);
+            console.log('data', data);
             getUserLocation(data, roundId);
         }
     });
@@ -28,15 +28,18 @@ function getUserLocation(data, roundId) {
     }
 }
 
-function initMap(data, userLocation, roundId) {
-    const map = new google.maps.Map(document.getElementById('map'), {
+async function initMap(data, userLocation, roundId) {
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const map = new Map(document.getElementById("map"), {
         zoom: 18,
         mapTypeId: 'satellite',
-        center: userLocation // Center of the map
+        center: userLocation, // Center of the map
+        mapId: "b2350821306d6b95",
     });
 
     // Marker for the user's current location
-    const userMarker = new google.maps.Marker({
+    const userMarker = new AdvancedMarkerElement({
         position: userLocation,
         map: map,
         title: 'You are here'
@@ -54,49 +57,73 @@ function initMap(data, userLocation, roundId) {
             if (!holeShots[shot.hole_num]) {
                 holeShots[shot.hole_num] = [];
             }
-            holeShots[shot.hole_num].push({ lat: parseFloat(shot.latitude), lng: parseFloat(shot.longitude), details: shot });
+            holeShots[shot.hole_num].push({ details: shot });
+
         });
 
-        // Create polylines for each hole
-        for (const holeNum in holeShots) {
-            const shotPositions = holeShots[holeNum].map(shot => shot);
+        console.log('holeshots', holeShots);
 
-            const shotPath = new google.maps.Polyline({
-                path: shotPositions,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
+        for (const holeNum in holeShots) {
+            const shots = holeShots[holeNum];
+            shots.forEach(shot => {
+                const start = new google.maps.LatLng(parseFloat(shot.details.latitude), parseFloat(shot.details.longitude));
+                const end = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
+
+                console.log('start', start)
+                console.log('end', end)
+
+                const shotPath = new google.maps.Polyline({
+                    path: [start, end], // Define the path using start and end points
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3
+                });
+
+                shotPath.setMap(map);
+
             });
 
-            shotPath.setMap(map);
-
             // Add markers and info windows for each shot
-            shotPositions.forEach((shot, index) => {
+
+            // Define a custom marker icon
+            const customMarker = {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: 'blue',
+                fillOpacity: 1,
+                scale: 6,
+                strokeColor: 'white',
+                strokeWeight: 2,
+            };
+            shots.forEach((shot, index) => {
                 const marker = new google.maps.Marker({
-                    position: shot,
+                    position: new google.maps.LatLng(parseFloat(shot.details.latitude), parseFloat(shot.details.longitude)),
                     map: map,
                     title: `Shot ${index + 1} - Hole ${holeNum}`,
+                    icon: customMarker
                 });
 
                 const infowindow = new google.maps.InfoWindow({
                     content: `
-                        <div>
-                            <h3>Hole ${holeNum}</h3>
-                            <p><strong>Shot:</strong> ${index + 1}</p>
-                            <p><strong>Club:</strong> ${shot.details.club__club_name}</p>
-                            <p><strong>Distance:</strong> ${shot.details.shot_distance} Yrds</p>
-                        </div>
-                    `
+                    <div>
+                        <h3>Hole ${holeNum}</h3>
+                        <p><strong>Shot:</strong> ${index + 1}</p>
+                        <p><strong>Club:</strong> ${shot.details.club__club_name}</p>
+                        <p><strong>Distance:</strong> ${shot.details.shot_distance} Yrds</p>
+                    </div>
+                `
                 });
 
                 marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
             });
+
+
         }
     }
 }
+
 
 
 

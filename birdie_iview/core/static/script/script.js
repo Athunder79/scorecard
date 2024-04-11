@@ -37,25 +37,26 @@ addEventListener('DOMContentLoaded', function () {
 // Get the latitude and longitude from browser for shot form
 function getLocation()
   {
-  if (navigator.geolocation)
-    {
-    navigator.geolocation.getCurrentPosition(showPosition,showError);
+  if (navigator.geolocation){
+    const options = {enableHighAccuracy: true};
+    navigator.geolocation.getCurrentPosition(showPosition,showError, options);
     }
+
   else{result.innerHTML="Geolocation is not supported by this browser.";}
 }
 
 function updateShotEndPosition(){
-  if (navigator.geolocation)
-    {
-    navigator.geolocation.getCurrentPosition(showEndPosition,showError);
+  if (navigator.geolocation){
+    const options = {enableHighAccuracy: true};
+    navigator.geolocation.getCurrentPosition(showEndPosition,showError, options);
     }
   else{result.innerHTML="Geolocation is not supported by this browser.";}
 }
 
 function updateShotEndShotPosition(){
-  if (navigator.geolocation)
-    {
-    navigator.geolocation.getCurrentPosition(showEndShotPosition,showError);
+  if (navigator.geolocation){
+    const options = {enableHighAccuracy: true};
+    navigator.geolocation.getCurrentPosition(showEndShotPosition,showError, options);
     }
   else{result.innerHTML="Geolocation is not supported by this browser.";}
 }
