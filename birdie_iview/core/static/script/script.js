@@ -31,9 +31,6 @@ addEventListener('DOMContentLoaded', function () {
   
 
 
-
-
-
 // Get the latitude and longitude from browser for shot form
 function getLocation()
   {

@@ -10,10 +10,8 @@ from django.conf import settings
 from .forms import ShotForm, RoundForm, HoleForm
 from django.db.models import Count, Avg, Max
 from .models import Shot, Course, Round, Clubs, Hole
-import googlemaps
+import googlemaps, requests, json
 from math import radians, sin, cos, sqrt, atan2
-
-import json
 
 
 # Create your views here.
@@ -315,17 +313,26 @@ def next_hole(request, hole_id, course_id, round_id):
 
 
     return redirect(hole_details, course_id=course_id, round_id=round_id)
-    
+
 
 def find_golf_courses(request:HttpRequest):
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
     key = settings.GOOGLE_MAPS_API_KEY
 
+    ip = requests.get('https://api.ipify.org?format=json')
+    ip_data = json.loads(ip.text)
+    res = requests.get('http://ip-api.com/json/' + ip_data['ip'])
+    location_data_one = json.loads(res.text)
+
+    longitude = location_data_one['lon']
+    latitude = location_data_one['lat']
+    
+
    # get the user's current location
-    location = gmaps.geolocate()
-    user_location = (location['location']['lat'], location['location']['lng'])
-    user_lat = location['location']['lat']
-    user_lng = location['location']['lng']
+    # location = gmaps.geolocate()
+    user_location = (latitude, longitude)
+    user_lat = latitude
+    user_lng = longitude
     radius = 10000  # Define a search radius in meters
 
 

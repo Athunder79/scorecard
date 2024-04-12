@@ -1,12 +1,15 @@
 {% extends "core/base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
 {% csrf_token %}
 
 <div id="map"></div>
 <div class="content-section">
 <div id="golf-courses">
-    <h2>Golf Courses Near You</h2>
+    <h2>Golf Courses Near You</h2> 
+    <h1>User Location</h1>
+    <p id="location"></p>
     </div>
     <ul>
         {% for course in golf_courses %}
@@ -27,13 +30,16 @@
 <script async src="https://maps.googleapis.com/maps/api/js?key={{key}}&loading=async&callback=initMap">
 </script>
 
+
 <script>
     function initMap() {
+        console.log("initMap function called");
         // get user's current location from the view
         var pos = {
             lat: {{ user_lat }},
             lng: {{ user_lng }}
         };
+        
 
         // Create a map centered on the user's location
         var infowindow = new google.maps.InfoWindow();
@@ -67,6 +73,42 @@
             });
         });
     }
+
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+                console.log("Latitude: " + latitude + " Longitude: " + longitude);
+                
+                // AJAX request to send user's location data to Django view
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'find-golf-courses' %}",
+                    data: {
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        // Call initMap after successfully retrieving user location
+                        initMap();
+                        // Handle success response if needed
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle error if needed
+                    }
+                });
+            });
+        } else {
+            // Geolocation not supported
+            console.log("Geolocation is not supported by this browser.");
+        }
+    }
+
+    // Call getUserLocation function when the page loads
+    window.onload = getUserLocation;
+  
 </script>
 
 {% endblock %}
