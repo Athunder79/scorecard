@@ -7,8 +7,7 @@
 <div id="map"></div>
 <div class="content-section">
 <div id="golf-courses">
-    <h2>Golf Courses Near You</h2> 
-    <h1>User Location</h1>
+    <h2>Golf Courses Near You</h2>
     <p id="location"></p>
     </div>
     <ul>
@@ -19,6 +18,10 @@
             Address: {{ course.address }}<br>
             Rating: {% if course.rating %}{{ course.rating }}{% else %}N/A{% endif %}<br>
             Distance: {{ course.distance }}
+            <div>
+            <br>
+            <a href="https://maps.google.com/?q={{ course.latitude }},{{ course.longitude }}" target="_blank" class="btn btn-primary direction-button">Get Directions</a>
+            </div>
             </div>
         </li>
         {% endfor %}
@@ -73,42 +76,6 @@
             });
         });
     }
-
-    function getUserLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var latitude = position.coords.latitude;
-                var longitude = position.coords.longitude;
-                console.log("Latitude: " + latitude + " Longitude: " + longitude);
-                
-                // AJAX request to send user's location data to Django view
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'find-golf-courses' %}",
-                    data: {
-                        'latitude': latitude,
-                        'longitude': longitude,
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        // Call initMap after successfully retrieving user location
-                        initMap();
-                        // Handle success response if needed
-                    },
-                    error: function(xhr, errmsg, err) {
-                        // Handle error if needed
-                    }
-                });
-            });
-        } else {
-            // Geolocation not supported
-            console.log("Geolocation is not supported by this browser.");
-        }
-    }
-
-    // Call getUserLocation function when the page loads
-    window.onload = getUserLocation;
-  
 </script>
 
 {% endblock %}
