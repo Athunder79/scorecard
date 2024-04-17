@@ -69,8 +69,16 @@ class Shot(models.Model):
     def get_absolute_url(self):
         return reverse('scorecard-create')
     
-    def save(self, *args, **kwargs):
 
+    # if hole number is not greater than last shot hole number then update shot end latitude and longitude with the current latitude and longitude
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            if Shot.objects.filter(round=self.round, hole=self.hole).exists():
+                last_shot = Shot.objects.filter(round=self.round, hole=self.hole).order_by('-shot_num_per_hole').first()
+                if self.hole_num <= last_shot.hole_num:
+                    last_shot.end_latitude = self.latitude
+                    last_shot.end_longitude = self.longitude
+                    last_shot.save()
         super().save(*args, **kwargs)
 
     def ShotNumber(self):

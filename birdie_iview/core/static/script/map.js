@@ -75,7 +75,7 @@ async function initMap(data, userLocation, roundId) {
                 const shotPath = new google.maps.Polyline({
                     path: [start, end], // Define the path using start and end points
                     geodesic: true,
-                    strokeColor: '#FF0000',
+                    strokeColor: 'yellow',
                     strokeOpacity: 1.0,
                     strokeWeight: 3
                 });
@@ -92,7 +92,7 @@ async function initMap(data, userLocation, roundId) {
                 fillColor: 'blue',
                 fillOpacity: 1,
                 scale: 6,
-                strokeColor: 'white',
+                strokeColor: 'blue',
                 strokeWeight: 2,
             };
             shots.forEach((shot, index) => {
@@ -100,8 +100,14 @@ async function initMap(data, userLocation, roundId) {
                     position: new google.maps.LatLng(parseFloat(shot.details.latitude), parseFloat(shot.details.longitude)),
                     map: map,
                     title: `Shot ${index + 1} - Hole ${holeNum}`,
-                    icon: customMarker
+                    icon: customMarker,
+                    label: {
+                        text: `${index + 1}`, // Shot number as label text
+                        color: 'white', // Label text color
+                        fontSize: '12px', // Label font size
+                    },
                 });
+                
 
                 const infowindow = new google.maps.InfoWindow({
                     content: `
