@@ -132,6 +132,7 @@ caption {
 }
 
 .round-heading{
+  cursor: pointer;
   font-size: x-small;
   color: #1B1A55;
 

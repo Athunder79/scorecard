@@ -95,7 +95,27 @@ async function initMap(data, userLocation, roundId) {
                 strokeColor: 'blue',
                 strokeWeight: 2,
             };
+
+            const endMarker ={
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: 'red',
+                fillOpacity: 1,
+                scale: 3,
+                strokeColor: 'red',
+                strokeWeight: 2,
+            };
+
+            const flagMarker = {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: 'green',
+                fillOpacity: 1,
+                scale: 3,
+                strokeColor: 'green',
+                strokeWeight: 2,
+            };
+            
             shots.forEach((shot, index) => {
+                const isLastShot = index === shots.length - 1;
                 const marker = new google.maps.Marker({
                     position: new google.maps.LatLng(parseFloat(shot.details.latitude), parseFloat(shot.details.longitude)),
                     map: map,
@@ -106,9 +126,35 @@ async function initMap(data, userLocation, roundId) {
                         color: 'white', // Label text color
                         fontSize: '12px', // Label font size
                     },
+                    
                 });
+
+                if (isLastShot && shot.details.end_latitude !== undefined && shot.details.end_longitude !== undefined) {
+                    const endMarkerPosition = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
+                    const endHole = new google.maps.Marker({
+                        position: endMarkerPosition,
+                        map: map,
+                        title: `End of Hole ${holeNum}`,
+                        icon: endMarker,
+                    });
+                }
                 
 
+                // // check if second to last shots hole number is less than the last shots hole number
+                // if (shots[index + 1] !== undefined && shots[index + 1].details.hole_num < shot.details.hole_num) {
+                //     const flagPosition = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
+                //     const flag = new google.maps.Marker({
+                //         position: flagPosition,
+                //         map: map,
+                //         title: `End of Hole ${holeNum}`,
+                //         icon: flagMarker,
+                //     });
+                // }
+
+
+                
+
+                
                 const infowindow = new google.maps.InfoWindow({
                     content: `
                     <div>
