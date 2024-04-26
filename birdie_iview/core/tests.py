@@ -3,7 +3,7 @@ from django.contrib.messages import get_messages
 from django.test import Client, TestCase,RequestFactory
 from django.urls import reverse
 from .models import Clubs, Round, Course, Hole, Shot
-from .forms import ShotForm, RoundForm, HoleForm
+from .forms import ShotForm, RoundForm, HoleForm,
 from .views import start_round, scorecard, end_of_shot
 from unittest.mock import patch
 
@@ -245,3 +245,10 @@ class HoleFormTest(TestCase):
         form = HoleForm(data=form_data)
         self.assertFalse(form.is_valid())
 
+
+
+class TestViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test_user', password='test_password')
+        self.client.force_login(self.user)

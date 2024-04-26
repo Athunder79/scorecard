@@ -414,6 +414,7 @@ def mapshots(request):
                         'end_longitude'
 
                         ))
+    # get hole details
   
     return JsonResponse (result_list, safe=False)
 

@@ -23,7 +23,6 @@ class ShotForm(forms.ModelForm):
             Field('club', id='club', css_class='custom-select', label=''),  
         )
 
-
 class HideInput(forms.widgets.Input):
     input_type = 'hidden'
 

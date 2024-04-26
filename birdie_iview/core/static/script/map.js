@@ -138,8 +138,9 @@ async function initMap(data, userLocation, roundId) {
                         icon: endMarker,
                     });
                 }
+                 console.log('shot',shot.details.shot_num_per_hole)
+                 console.log('hole number',shot.details.hole_num )  
                 
-
                 // // check if second to last shots hole number is less than the last shots hole number
                 // if (shots[index + 1] !== undefined && shots[index + 1].details.hole_num < shot.details.hole_num) {
                 //     const flagPosition = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
