@@ -34,8 +34,48 @@
 </script>
 
 
+
+
 <script>
-    function initMap() {
+
+
+    function getUserLocation() {
+    console.log("getUserLocation function called");
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            console.log("Latitude: " + latitude + " Longitude: " + longitude);
+            
+            // AJAX request to send user's location data to Django view
+            $.ajax({
+                type: "POST",
+                url: "{% url 'find-golf-courses' %}",
+                data: {
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    // Call initMap after successfully retrieving user location
+                    initMap();
+                    // Handle success response if needed
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle error if needed
+                }
+            });
+        });
+    } else {
+        // Geolocation not supported
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
+
+// Call getUserLocation function when the page loads
+window.onload = getUserLocation;
+
+function initMap() {
         console.log("initMap function called");
         // get user's current location from the view
         var pos = {
@@ -76,6 +116,7 @@
             });
         });
     }
+
 </script>
 
 {% endblock %}

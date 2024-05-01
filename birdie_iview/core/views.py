@@ -316,29 +316,33 @@ def next_hole(request, hole_id, course_id, round_id):
 
 
 def find_golf_courses(request:HttpRequest):
+    
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
     key = settings.GOOGLE_MAPS_API_KEY
+    
+    latitude = 53.304913
+    longitude = -6.249326
 
-    ip = requests.get('https://api.ipify.org?format=json')
-    ip_data = json.loads(ip.text)
-    res = requests.get('http://ip-api.com/json/' + ip_data['ip'])
-    location_data_one = json.loads(res.text)
-
-    longitude = location_data_one['lon']
-    latitude = location_data_one['lat']
+    print(latitude, longitude)
+    
+    if request.method == 'POST':
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+    
     
 
-   # get the user's current location
-    # location = gmaps.geolocate()
+    print(latitude, longitude)
+
     user_location = (latitude, longitude)
     user_lat = latitude
     user_lng = longitude
     radius = 10000  # Define a search radius in meters
 
-
+    
     # Search for golf courses nearby
     places = gmaps.places_nearby(user_location, radius=radius, type='golf_course', keyword='golf course')
-    
+    print('places')
+    print(user_location)
     # get distance from user's location to the golf course
     for place in places['results']:
         place['distance'] = gmaps.distance_matrix(user_location, place['geometry']['location'])['rows'][0]['elements'][0]['distance']['text']
