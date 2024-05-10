@@ -47,7 +47,7 @@ class RoundForm(forms.ModelForm):
         )
 
     def get_course_choices(self):
-        existing_courses = Course.objects.all().values_list('id', 'name')
+        existing_courses = Course.objects.all().order_by('name').values_list('id', 'name')
         course_choices = [(str(course[0]), course[1]) for course in existing_courses]
         course_choices.insert(0, ('', 'Select or type course name...'))
         return course_choices

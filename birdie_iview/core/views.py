@@ -320,6 +320,10 @@ def find_golf_courses(request, latitude, longitude):
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
     key = settings.GOOGLE_MAPS_API_KEY
     
+   
+    print(latitude, longitude)
+    
+
 
     user_location = (latitude, longitude)
     user_lat = latitude
