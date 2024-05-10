@@ -7,6 +7,7 @@ addEventListener('DOMContentLoaded', function () {
   let nextHole = document.getElementById("next-hole");
   let currentHole = document.getElementById("current-hole");
   let atMyBall = document.getElementById("at-my-ball");
+  let courseFinders = document.getElementsByClassName("course-finder");
 
   // check if the element exists before adding the event listener
   if (location != null){location.addEventListener("click", getLocation);}
@@ -14,6 +15,8 @@ addEventListener('DOMContentLoaded', function () {
   if (nextHole != null){nextHole.addEventListener("click", updateShotEndPosition);}
   if (currentHole != null){colourCells();}
   if (atMyBall != null){atMyBall.addEventListener("click", updateShotEndShotPosition);}
+  for (let courseFinder of courseFinders) {courseFinder.addEventListener("click", getCourseLocation);}
+
 
 
   let roundHeadings = document.querySelectorAll('h3.round-heading');
@@ -29,7 +32,19 @@ addEventListener('DOMContentLoaded', function () {
   });
 });
   
-
+// get user location for course finder
+function getCourseLocation(){
+  console.log("getUserLocation function called");
+      if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+          console.log("Latitude: " + latitude + " Longitude: " + longitude);
+          
+          // rediresct to the course finder page with the latitude and longitude
+          window.location.href = "/find-golf-courses/" + latitude + "/" + longitude;
+      });
+    }}
 
 // Get the latitude and longitude from browser for shot form
 function getLocation()

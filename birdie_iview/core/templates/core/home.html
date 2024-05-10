@@ -15,14 +15,14 @@
           <span>{{ user.username }}</span>
         </div>
         <div class="list-group">
-          <a href="{% url 'find-golf-courses' %}" class="list-group-item list-group-item-action">Find a Course</a>
+          <a href="#" class="list-group-item list-group-item-action course-finder">Find a Course</a>
           <a href="{% url 'start-round' %}" class="list-group-item list-group-item-action">Start Round</a>
           <a href="{% url 'clubs' %}" class="list-group-item list-group-item-action">Add Clubs</a>
           <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">Profile</a>
           {% endif %}
           <!-- if user is not logged in  -->
           {% if not user.is_authenticated %}
-          <a href="{% url 'find-golf-courses' %}" class="list-group-item list-group-item-action">Find a Course</a>
+          <a href="#" class="list-group-item list-group-item-action course-finder">Find a Course</a>
           <a href="{% url 'register' %}" class="list-group-item list-group-item-action">Register</a>
           <a href="{% url 'login' %}" class="list-group-item list-group-item-action">Login</a>
           {% endif %}

@@ -315,23 +315,11 @@ def next_hole(request, hole_id, course_id, round_id):
     return redirect(hole_details, course_id=course_id, round_id=round_id)
 
 
-def find_golf_courses(request:HttpRequest):
+def find_golf_courses(request, latitude, longitude):
     
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
     key = settings.GOOGLE_MAPS_API_KEY
     
-    latitude = 53.304913
-    longitude = -6.249326
-
-    print(latitude, longitude)
-    
-    if request.method == 'POST':
-        latitude = request.POST.get('latitude')
-        longitude = request.POST.get('longitude')
-    
-    
-
-    print(latitude, longitude)
 
     user_location = (latitude, longitude)
     user_lat = latitude
