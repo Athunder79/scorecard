@@ -301,7 +301,7 @@ map {
   font-weight: bolder;
 }
 
-#map {
+.map {
   height: 700px;  
   width: 100%;     
    

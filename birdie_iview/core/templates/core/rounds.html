@@ -4,88 +4,103 @@
 {% csrf_token %}
 {% load static %}
 
-
 {% if user.is_authenticated %}
 
 <!-- Stats per clubs -->
 <div class="content-section">
-
-<h3><strong>All Time Club Stats</strong></h3>
-<div class="content-section">
-    <div id="clubs" class="table-responsive">
-        <table id="clubs-body" class="table">
-            <thead>
-                <tr>
-                    <th class="stats-th" scope="col">Club</th>
-                    <th class="stats-th" scope="col">Shots</th>
-                    <th class="stats-th" scope="col">Avg (yds)</th>
-                    <th class="stats-th" scope="col">Longest (yds)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for club_stat in shots_per_club_all %}
-                <tr>
-                    <td>{{ club_stat.club__club_name }}</td>
-                    <td>{{ club_stat.total_shots }}</td>
-                    <td>{{ club_stat.average_distance|floatformat:"0" }}</td>
-                    {% for furthest_shot in furthest_shots_per_club %}
-                        {% if furthest_shot.club__club_name == club_stat.club__club_name %}
-                            <td>{{ furthest_shot.furthest_distance|floatformat:"0" }}</td>
-                        {% endif %}
+    <h3><strong>All Time Club Stats</strong></h3>
+    <div class="content-section">
+        <div id="clubs" class="table-responsive">
+            <table id="clubs-body" class="table">
+                <thead>
+                    <tr>
+                        <th class="stats-th" scope="col">Club</th>
+                        <th class="stats-th" scope="col">Shots</th>
+                        <th class="stats-th" scope="col">Avg (yds)</th>
+                        <th class="stats-th" scope="col">Longest (yds)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for club_stat in shots_per_club_all %}
+                    <tr>
+                        <td>{{ club_stat.club__club_name }}</td>
+                        <td>{{ club_stat.total_shots }}</td>
+                        <td>{{ club_stat.average_distance|floatformat:"0" }}</td>
+                        {% for furthest_shot in furthest_shots_per_club %}
+                            {% if furthest_shot.club__club_name == club_stat.club__club_name %}
+                                <td>{{ furthest_shot.furthest_distance|floatformat:"0" }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-</div>
 
 <div class="content-section">
-
     <h3><strong>Your Rounds</strong></h3>
 </div>
 
 {% for round_item in round %}
-
 <div class="content-section">
     <h3 class="round-heading"><strong>Show/Hide &nbsp;&nbsp;&nbsp;&nbsp; {{ round_item.course }}<span class="table-head-right">{{ round_item.round_date|date:"d-M-Y" }}</span></strong></h3>
-<div class="content-section round-details hide">
-    <div id="round-{{ round_item.id }}" class="table-responsive">
-        <table id="round-body" class="table">
-            <thead class="stats-th">
-                <tr>
-                    <th class="stats-th" scope="col">#</th>
-                    <th class="stats-th" scope="col">Hole</th>
-                    <th class="stats-th" scope="col">Par</th>
-                    <th class="stats-th" scope="col">Hole/Shot</th>
-                    <th class="stats-th" scope="col">Club</th>
-                    <th class="stats-th" scope="col">Dist</th>
-                </tr>
-            </thead>
+    <div class="content-section round-details hide">
+        <div id="round-{{ round_item.id }}" class="table-responsive">
+            <table id="round-body" class="table">
+                <thead class="stats-th">
+                    <tr>
+                        <th class="stats-th" scope="col">#</th>
+                        <th class="stats-th" scope="col">Hole</th>
+                        <th class="stats-th" scope="col">Par</th>
+                        <th class="stats-th" scope="col">Hole/Shot</th>
+                        <th class="stats-th" scope="col">Club</th>
+                        <th class="stats-th" scope="col">Dist</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shot in round_item.shot_set.all %}
+                    <tr>
+                        <th class="stats-th" scope="row">{{ forloop.counter }}</th>
+                        <td>{{ shot.hole_num }}</td>
+                        <td>{{ shot.hole_par }}</td>
+                        <td>{{ shot.shot_num_per_hole|add:1 }}</td>
+                        <td>{{ shot.club.club_name }}</td>
+                        <td>{{ shot.shot_distance|floatformat:"0" }}{{shot.latitude}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-            <tbody>
+        <!-- Show shot on Google Maps -->
+        <div id="map-{{ round_item.id }}" class="map" style="height: 400px;"></div>
+        <script>
+            async function initMap{{ round_item.id }}() {
+                const { Map } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+                const map = new Map(document.getElementById("map-{{ round_item.id }}"), {
+                    zoom: 16,
+                    mapTypeId: 'satellite',
+                    // first shot in round
+                    center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
+                    mapId: "b2350821306d6b95",
+                });
+
                 {% for shot in round_item.shot_set.all %}
-                <tr>
-                    <th class="stats-th" scope="row">{{ forloop.counter }}</th>
-                    <td>{{ shot.hole_num }}</td>
-                    <td>{{ shot.hole_par }}</td>
-                    <td>{{ shot.shot_num_per_hole|add:1 }}</td>
-                    <td>{{ shot.club.club_name }}</td>
-                    <td>{{ shot.shot_distance|floatformat:"0" }}</td>
-                </tr>
+                    new google.maps.Marker({
+                        position: { lat: {{ shot.latitude }}, lng: {{ shot.longitude }} },
+                        map: map,
+                        title: 'Shot {{ forloop.counter }}'
+                    });
                 {% endfor %}
-            </tbody>
-        </table>
+            }
+        </script>
+        <script async src="https://maps.googleapis.com/maps/api/js?key={{ key }}&loading=async&callback=initMap{{ round_item.id }}"></script>
     </div>
 </div>
-</div>
-
-
-
-
 {% endfor %}
-
 
 {% endif %}
 {% endblock %}

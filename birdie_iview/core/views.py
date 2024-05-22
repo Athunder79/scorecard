@@ -430,6 +430,8 @@ def finish_round(request, round_id):
 class ScoreListView(LoginRequiredMixin, ListView):
     template_name = 'core/rounds.html'
     context_object_name = 'data'
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
+    key = settings.GOOGLE_MAPS_API_KEY
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -450,6 +452,9 @@ class ScoreListView(LoginRequiredMixin, ListView):
             .annotate(furthest_distance=Max('shot_distance'))
         )
         context['furthest_shots_per_club'] = furthest_shots_per_club
+
+        # add the google maps api key to the context
+        context['key'] = self.key
 
         return context
 
