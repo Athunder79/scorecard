@@ -76,31 +76,51 @@
 
         <!-- Show shot on Google Maps -->
         <div id="map-{{ round_item.id }}" class="map" style="height: 400px;"></div>
-        <script>
-            async function initMap{{ round_item.id }}() {
-                const { Map } = await google.maps.importLibrary("maps");
-                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-                const map = new Map(document.getElementById("map-{{ round_item.id }}"), {
-                    zoom: 16,
-                    mapTypeId: 'satellite',
-                    // first shot in round
-                    center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
-                    mapId: "b2350821306d6b95",
-                });
-
-                {% for shot in round_item.shot_set.all %}
-                    new google.maps.Marker({
-                        position: { lat: {{ shot.latitude }}, lng: {{ shot.longitude }} },
-                        map: map,
-                        title: 'Shot {{ forloop.counter }}'
-                    });
-                {% endfor %}
-            }
-        </script>
-        <script async src="https://maps.googleapis.com/maps/api/js?key={{ key }}&loading=async&callback=initMap{{ round_item.id }}"></script>
     </div>
 </div>
 {% endfor %}
+
+<!-- Data for initializing maps -->
+<script>
+    var roundsData = [
+        {% for round_item in round %}
+        {
+            id: {{ round_item.id }},
+            center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
+            shots: [
+                {% for shot in round_item.shot_set.all %}
+                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}' }
+                {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }
+        {% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+</script>
+
+<!-- Load Google Maps JavaScript API -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initAllMaps"></script>
+
+<script>
+    function initAllMaps() {
+        roundsData.forEach(round => {
+            const map = new google.maps.Map(document.getElementById(`map-${round.id}`), {
+                zoom: 18,
+                mapTypeId: 'satellite',
+                center: round.center,
+            });
+
+            round.shots.forEach(shot => {
+                new google.maps.Marker({
+                    position: shot,
+                    map: map,
+                    title: shot.title
+                });
+            });
+        });
+    }
+</script>
 
 {% endif %}
 {% endblock %}
