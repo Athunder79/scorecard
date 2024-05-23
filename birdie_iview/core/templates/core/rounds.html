@@ -89,29 +89,6 @@
             center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
             shots: [
                 {% for shot in round_item.shot_set.all %}
-                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}', shotNum: '{{shot.shot_num_per_hole|add:1}}' }
-                {% if not forloop.last %},{% endif %}
-                {% endfor %}
-
-            ]
-        }
-        {% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ];
-
-    console.log(roundsData)
-</script>
-
-<!-- Load Google Maps JavaScript API -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initAllMaps"></script>
-<script>
-    var roundsData = [
-        {% for round_item in round %}
-        {
-            id: {{ round_item.id }},
-            center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
-            shots: [
-                {% for shot in round_item.shot_set.all %}
                 { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}', shotNum: "{{ shot.shot_num_per_hole|add:1 }}" }
                 {% if not forloop.last %},{% endif %}
                 {% endfor %}
@@ -178,7 +155,6 @@
         });
     }
 </script>
-
 
 {% endif %}
 {% endblock %}
