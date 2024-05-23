@@ -89,7 +89,30 @@
             center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
             shots: [
                 {% for shot in round_item.shot_set.all %}
-                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}' }
+                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}', shotNum: '{{shot.shot_num_per_hole|add:1}}' }
+                {% if not forloop.last %},{% endif %}
+                {% endfor %}
+
+            ]
+        }
+        {% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    console.log(roundsData)
+</script>
+
+<!-- Load Google Maps JavaScript API -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initAllMaps"></script>
+<script>
+    var roundsData = [
+        {% for round_item in round %}
+        {
+            id: {{ round_item.id }},
+            center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
+            shots: [
+                {% for shot in round_item.shot_set.all %}
+                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}', shotNum: "{{ shot.shot_num_per_hole|add:1 }}" }
                 {% if not forloop.last %},{% endif %}
                 {% endfor %}
             ]
@@ -97,6 +120,8 @@
         {% if not forloop.last %},{% endif %}
         {% endfor %}
     ];
+
+    console.log(roundsData)
 </script>
 
 <!-- Load Google Maps JavaScript API -->
@@ -111,16 +136,49 @@
                 center: round.center,
             });
 
+            // Define a custom marker icon
+            const customMarker = {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: 'blue',
+                fillOpacity: 1,
+                scale: 6,
+                strokeColor: 'blue',
+                strokeWeight: 2,
+            };
+
+            const shotPositions = [];
+
             round.shots.forEach(shot => {
+                const position = { lat: shot.lat, lng: shot.lng };
+                shotPositions.push(position);
+
                 new google.maps.Marker({
-                    position: shot,
+                    position: position,
+                    icon: customMarker,
+                    label: {
+                        text: shot.shotNum, // Shot number as label text
+                        color: 'white', // Label text color
+                        fontSize: '12px', // Label font size
+                    },
                     map: map,
                     title: shot.title
                 });
             });
+
+            // Create the polyline between shots
+            const polyline = new google.maps.Polyline({
+                path: shotPositions,
+                geodesic: true,
+                strokeColor: 'yellow',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+            polyline.setMap(map);
         });
     }
 </script>
+
 
 {% endif %}
 {% endblock %}
