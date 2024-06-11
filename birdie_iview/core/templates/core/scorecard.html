@@ -87,16 +87,16 @@
 
 <div class="scorecard">
     <table class="tables">
-        <caption>
+        <!-- <caption>
             <h2>Front 9</h2>
-        </caption>
+        </caption> -->
         <tbody>
             <tr>
                 <th scope="col">Hole</th>
                 {% for hole in holes|slice:":9" %}
                 <th scope="col">{{ hole.hole_num }}</th>
                 {% endfor %}
-                <th scope="col">In</th>
+                <th scope="col">OUT</th>
             </tr>
             <tr>
                 <td>Dist</td>
@@ -133,9 +133,9 @@
 
     {% if hole_num > 9 %}
     <table class="back9heading tables">
-        <caption>
+        <!-- <caption>
             <h2>Back 9</h2>
-        </caption>
+        </caption> -->
         <tbody>
             <tr>
                 <th scope="col">Hole</th>
@@ -143,7 +143,7 @@
                 <th scope="col">{{ hole.hole_num }}</th>
                 {% endfor %}
 
-                <th scope="col">Out</th>
+                <th scope="col">IN</th>
             </tr>
             <tr>
                 <td>Dist</td>
@@ -177,9 +177,9 @@
     </table>
     {% endif %}
     <table class="tableTotal">
-        <caption>
+        <!-- <caption>
             <h2>Total Round Score</h2>
-        </caption>
+        </caption> -->
 
         <tbody>
             <tr>
