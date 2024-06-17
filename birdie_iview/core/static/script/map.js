@@ -1,6 +1,3 @@
-let map;
-let userMarker;
-
 $(document).ready(function () {
     $.ajax({
         url: mapShotsUrl,
@@ -19,17 +16,12 @@ function getUserLocation(data, roundId) {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            if (map) {
-                console.log('map if');
-                initMap(data, userLocation, roundId);
-            } else {
-                console.log('map else');
-                updateUserLocation(userLocation);
-            }
+            initMap(data, userLocation, roundId);
         },
-        function () {
-            handleLocationError(true);
-        });
+
+            function () {
+                handleLocationError(true);
+            });
     } else {
         // Browser doesn't support Geolocation
         handleLocationError(false);
@@ -39,25 +31,24 @@ function getUserLocation(data, roundId) {
 async function initMap(data, userLocation, roundId) {
     const { Map } = await google.maps.importLibrary("maps");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-    map = new Map(document.getElementById("map"), {
+    const map = new Map(document.getElementById("map"), {
         zoom: 18,
         mapTypeId: 'satellite',
         center: userLocation, // Center of the map
         mapId: "b2350821306d6b95",
     });
 
-    // Create the flashing blue dot element
-    const flashingDot = document.createElement('div');
-    flashingDot.className = 'flashing-dot';
+            // Create the flashing blue dot element
+            const flashingDot = document.createElement('div');
+            flashingDot.className = 'flashing-dot';
 
-    // Custom marker for the user's current location
-    userMarker = new AdvancedMarkerElement({
-        position: userLocation,
-        map: map,
-        title: 'You are here',
-        content: flashingDot
-    });
+            // Custom marker for the user's current location
+            const userMarker = new AdvancedMarkerElement({
+                position: userLocation,
+                map: map,
+                title: 'You are here',
+                content: flashingDot
+            });
 
     // Filter to only include shots from the current round
     if (data) {
@@ -72,6 +63,7 @@ async function initMap(data, userLocation, roundId) {
                 holeShots[shot.hole_num] = [];
             }
             holeShots[shot.hole_num].push({ details: shot });
+
         });
 
         console.log('holeshots', holeShots);
@@ -82,8 +74,8 @@ async function initMap(data, userLocation, roundId) {
                 const start = new google.maps.LatLng(parseFloat(shot.details.latitude), parseFloat(shot.details.longitude));
                 const end = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
 
-                console.log('start', start);
-                console.log('end', end);
+                console.log('start', start)
+                console.log('end', end)
 
                 const shotPath = new google.maps.Polyline({
                     path: [start, end], // Define the path using start and end points
@@ -109,7 +101,7 @@ async function initMap(data, userLocation, roundId) {
                 strokeWeight: 2,
             };
 
-            const endMarker = {
+            const endMarker ={
                 path: google.maps.SymbolPath.CIRCLE,
                 fillColor: 'red',
                 fillOpacity: 1,
@@ -139,6 +131,7 @@ async function initMap(data, userLocation, roundId) {
                         color: 'white', // Label text color
                         fontSize: '12px', // Label font size
                     },
+                    
                 });
 
                 if (isLastShot && shot.details.end_latitude !== undefined && shot.details.end_longitude !== undefined) {
@@ -150,35 +143,48 @@ async function initMap(data, userLocation, roundId) {
                         icon: endMarker,
                     });
                 }
+                 console.log('shot',shot.details.shot_num_per_hole)
+                 console.log('hole number',shot.details.hole_num )  
                 
-                console.log('shot', shot.details.shot_num_per_hole);
-                console.log('hole number', shot.details.hole_num);
+                // // check if second to last shots hole number is less than the last shots hole number
+                // if (shots[index + 1] !== undefined && shots[index + 1].details.hole_num < shot.details.hole_num) {
+                //     const flagPosition = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
+                //     const flag = new google.maps.Marker({
+                //         position: flagPosition,
+                //         map: map,
+                //         title: `End of Hole ${holeNum}`,
+                //         icon: flagMarker,
+                //     });
+                // }
 
+
+                
+
+                
                 const infowindow = new google.maps.InfoWindow({
                     content: `
-                        <div>
-                            <h3>Hole ${holeNum}</h3>
-                            <p><strong>Shot:</strong> ${index + 1}</p>
-                            <p><strong>Club:</strong> ${shot.details.club__club_name}</p>
-                            <p><strong>Distance:</strong> ${shot.details.shot_distance} Yrds</p>
-                        </div>
-                    `
+                    <div>
+                        <h3>Hole ${holeNum}</h3>
+                        <p><strong>Shot:</strong> ${index + 1}</p>
+                        <p><strong>Club:</strong> ${shot.details.club__club_name}</p>
+                        <p><strong>Distance:</strong> ${shot.details.shot_distance} Yrds</p>
+                    </div>
+                `
                 });
 
                 marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
             });
+
+
         }
     }
 }
 
-function updateUserLocation(userLocation) {
-    if (userMarker) {
-        userMarker.position = userLocation;
-        map.setCenter(userLocation);
-    }
-}
+
+
+
 
 function handleLocationError(browserHasGeolocation) {
     let errorMessage = '';
@@ -189,3 +195,6 @@ function handleLocationError(browserHasGeolocation) {
     }
     console.error(errorMessage);
 }
+
+
+
