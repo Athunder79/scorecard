@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 function getUserLocation(data, roundId) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
+        navigator.geolocation.watchPosition(function (position) {
             const userLocation = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
@@ -38,12 +38,17 @@ async function initMap(data, userLocation, roundId) {
         mapId: "b2350821306d6b95",
     });
 
-    // Marker for the user's current location
-    const userMarker = new AdvancedMarkerElement({
-        position: userLocation,
-        map: map,
-        title: 'You are here'
-    });
+            // Create the flashing blue dot element
+            const flashingDot = document.createElement('div');
+            flashingDot.className = 'flashing-dot';
+
+            // Custom marker for the user's current location
+            const userMarker = new AdvancedMarkerElement({
+                position: userLocation,
+                map: map,
+                title: 'You are here',
+                content: flashingDot
+            });
 
     // Filter to only include shots from the current round
     if (data) {

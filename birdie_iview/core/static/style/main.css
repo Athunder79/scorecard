@@ -55,6 +55,14 @@ body {
   text-align: center;
 }
 
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, .4rem);
+  padding-left: var(--bs-gutter-x, .4rem);
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .content-section {
   /* add shadow  */
   box-shadow: 0 4px 10px #050505;
@@ -181,6 +189,26 @@ table{
   margin:0 auto;
   width: 50%;
 }
+
+/* Flashing blue dot */
+.flashing-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #288abb;
+    border-radius: 50%;
+    animation: flash 1.5s infinite alternate;
+}
+
+@keyframes flash {
+    0%, 50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
 
 .show-map-button {
 
@@ -310,7 +338,7 @@ th {
   /* border:solid; */
   border-style: collapse;
 color: #ecf4f0;
-  padding: .5em;
+  padding: 0em;
 }
 
 map {
