@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 function getUserLocation(data, roundId) {
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(function (position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             const userLocation = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
