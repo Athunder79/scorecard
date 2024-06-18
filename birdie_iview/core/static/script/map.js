@@ -4,51 +4,65 @@ $(document).ready(function () {
         method: 'GET',
         success: function (data) {
             console.log('data', data);
-            getUserLocation(data, roundId);
+            initMap(data, roundId);
         }
     });
 });
 
-function getUserLocation(data, roundId) {
+let map, userMarker;
+
+function initMap(data, roundId) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             const userLocation = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            initMap(data, userLocation, roundId);
-        },
 
-            function () {
+            loadMap(data, userLocation, roundId);
+
+            // Watch the user's position and update it on the map
+            navigator.geolocation.watchPosition(function (position) {
+                const newUserLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                updateUserLocation(newUserLocation);
+            }, function () {
                 handleLocationError(true);
             });
+
+        }, function () {
+            handleLocationError(true);
+        });
     } else {
-        // Browser doesn't support Geolocation
         handleLocationError(false);
     }
 }
 
-async function initMap(data, userLocation, roundId) {
+async function loadMap(data, userLocation, roundId) {
     const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    const map = new Map(document.getElementById("map"), {
+    const { Marker } = await google.maps.importLibrary("marker");
+    map = new Map(document.getElementById("map"), {
         zoom: 18,
         mapTypeId: 'satellite',
         center: userLocation, // Center of the map
         mapId: "b2350821306d6b95",
     });
 
-            // Create the flashing blue dot element
-            const flashingDot = document.createElement('div');
-            flashingDot.className = 'flashing-dot';
+    // Create the flashing blue dot element
+    const flashingDot = document.createElement('div');
+    flashingDot.className = 'flashing-dot';
 
-            // Custom marker for the user's current location
-            const userMarker = new AdvancedMarkerElement({
-                position: userLocation,
-                map: map,
-                title: 'You are here',
-                content: flashingDot
-            });
+    // Custom marker for the user's current location
+    userMarker = new Marker({
+        position: userLocation,
+        map: map,
+        title: 'You are here',
+        icon: {
+            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue dot icon URL
+        }
+    });
 
     // Filter to only include shots from the current round
     if (data) {
@@ -101,7 +115,7 @@ async function initMap(data, userLocation, roundId) {
                 strokeWeight: 2,
             };
 
-            const endMarker ={
+            const endMarker = {
                 path: google.maps.SymbolPath.CIRCLE,
                 fillColor: 'red',
                 fillOpacity: 1,
@@ -118,7 +132,7 @@ async function initMap(data, userLocation, roundId) {
                 strokeColor: 'green',
                 strokeWeight: 2,
             };
-            
+
             shots.forEach((shot, index) => {
                 const isLastShot = index === shots.length - 1;
                 const marker = new google.maps.Marker({
@@ -131,7 +145,7 @@ async function initMap(data, userLocation, roundId) {
                         color: 'white', // Label text color
                         fontSize: '12px', // Label font size
                     },
-                    
+
                 });
 
                 if (isLastShot && shot.details.end_latitude !== undefined && shot.details.end_longitude !== undefined) {
@@ -143,24 +157,9 @@ async function initMap(data, userLocation, roundId) {
                         icon: endMarker,
                     });
                 }
-                 console.log('shot',shot.details.shot_num_per_hole)
-                 console.log('hole number',shot.details.hole_num )  
-                
-                // // check if second to last shots hole number is less than the last shots hole number
-                // if (shots[index + 1] !== undefined && shots[index + 1].details.hole_num < shot.details.hole_num) {
-                //     const flagPosition = new google.maps.LatLng(parseFloat(shot.details.end_latitude), parseFloat(shot.details.end_longitude));
-                //     const flag = new google.maps.Marker({
-                //         position: flagPosition,
-                //         map: map,
-                //         title: `End of Hole ${holeNum}`,
-                //         icon: flagMarker,
-                //     });
-                // }
+                console.log('shot', shot.details.shot_num_per_hole)
+                console.log('hole number', shot.details.hole_num)
 
-
-                
-
-                
                 const infowindow = new google.maps.InfoWindow({
                     content: `
                     <div>
@@ -176,15 +175,16 @@ async function initMap(data, userLocation, roundId) {
                     infowindow.open(map, marker);
                 });
             });
-
-
         }
     }
 }
 
-
-
-
+function updateUserLocation(newUserLocation) {
+    if (userMarker) {
+        userMarker.setPosition(newUserLocation);
+        map.setCenter(newUserLocation);
+    }
+}
 
 function handleLocationError(browserHasGeolocation) {
     let errorMessage = '';
@@ -195,6 +195,3 @@ function handleLocationError(browserHasGeolocation) {
     }
     console.error(errorMessage);
 }
-
-
-

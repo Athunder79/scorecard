@@ -5,4 +5,6 @@ staticfiles/
 findcourse.js
 htmlcov/
 .coverage
+map1.js
+maporig.js
 
