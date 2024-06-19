@@ -42,7 +42,7 @@ function initMap(data, roundId) {
 
 async function loadMap(data, userLocation, roundId) {
     const { Map } = await google.maps.importLibrary("maps");
-    const { Marker } = await google.maps.importLibrary("marker");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     map = new Map(document.getElementById("map"), {
         zoom: 18,
         mapTypeId: 'satellite',
@@ -55,13 +55,11 @@ async function loadMap(data, userLocation, roundId) {
     flashingDot.className = 'flashing-dot';
 
     // Custom marker for the user's current location
-    userMarker = new Marker({
+    userMarker = new AdvancedMarkerElement({
         position: userLocation,
         map: map,
         title: 'You are here',
-        icon: {
-            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue dot icon URL
-        }
+        content: flashingDot
     });
 
     // Filter to only include shots from the current round
@@ -181,9 +179,24 @@ async function loadMap(data, userLocation, roundId) {
 
 function updateUserLocation(newUserLocation) {
     if (userMarker) {
-        userMarker.setPosition(newUserLocation);
-        map.setCenter(newUserLocation);
+        // Remove the existing marker
+        userMarker.setMap(null);
     }
+
+    // Create a new flashing blue dot element
+    const flashingDot = document.createElement('div');
+    flashingDot.className = 'flashing-dot';
+
+    // Create a new marker at the new location
+    userMarker = new google.maps.marker.AdvancedMarkerElement({
+        position: newUserLocation,
+        map: map,
+        title: 'You are here',
+        content: flashingDot
+    });
+
+    // Center the map on the new user location
+    map.setCenter(newUserLocation);
 }
 
 function handleLocationError(browserHasGeolocation) {
