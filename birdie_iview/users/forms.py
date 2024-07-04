@@ -39,9 +39,40 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class ClubsForm(forms.ModelForm):
+    CLUB_NAME_CHOICES = [
+        ('Driver', 'Driver'),
+        ('2 Wood', '2 Wood'),
+        ('3 Wood', '3 Wood'),
+        ('4 Wood', '4 Wood'),
+        ('5 Wood', '5 Wood'),
+        ('6 Wood', '6 Wood'),
+        ('7 Wood', '7 Wood'),
+        ('8 Wood', '8 Wood'),
+        ('9 Wood', '9 Wood'),
+        ('1 Iron', '1 Iron'),
+        ('2 Iron', '2 Iron'),
+        ('3 Iron', '3 Iron'),
+        ('4 Iron', '4 Iron'),
+        ('5 Iron', '5 Iron'),
+        ('6 Iron', '6 Iron'),
+        ('7 Iron', '7 Iron'),
+        ('8 Iron', '8 Iron'),
+        ('9 Iron', '9 Iron'),
+        ('Pitching Wedge', 'Pitching Wedge'),
+        ('Sand Wedge', 'Sand Wedge'),
+        ('Lob Wedge', 'Lob Wedge'),
+        ('Gap Wedge', 'Gap Wedge'),
+        ('Fairway Wood', 'Fairway Wood'),
+        ('Hybrid', 'Hybrid'),
+        ('Putter', 'Putter'),
+        
+    ]
+
+    club_name = forms.ChoiceField(choices=CLUB_NAME_CHOICES, label='Club Type')
+
     class Meta:
         model = Clubs
-        fields = ['club_name','club_manufacturer','club_model','club_loft']
+        fields = ['club_name', 'club_manufacturer', 'club_model', 'club_loft']
         labels = {
             'club_name': 'Club Type',
             'club_manufacturer': 'Manufacturer',
