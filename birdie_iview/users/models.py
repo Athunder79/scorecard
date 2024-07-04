@@ -14,8 +14,11 @@ class Profile(models.Model):
 
 class Clubs(models.Model):
     id = models.AutoField(primary_key=True)
-    club_name = models.CharField(max_length=100, blank=True, null=False)
-    club_type = models.CharField(max_length=100)
+    club_name = models.CharField(max_length=100, blank=False, null=False)
+    club_manufacturer = models.CharField(max_length=100,null=True, blank=True)
+    club_model = models.CharField(max_length=100,null=True, blank=True)
+    club_loft = models.IntegerField(null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

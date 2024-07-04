@@ -41,4 +41,10 @@ class ProfileUpdateForm(forms.ModelForm):
 class ClubsForm(forms.ModelForm):
     class Meta:
         model = Clubs
-        fields = ['club_name', 'club_type']
+        fields = ['club_name','club_manufacturer','club_model','club_loft']
+        labels = {
+            'club_name': 'Club Type',
+            'club_manufacturer': 'Manufacturer',
+            'club_model': 'Model',
+            'club_loft': 'Loft (degrees)',
+        }

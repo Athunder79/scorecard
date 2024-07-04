@@ -5,24 +5,40 @@
     <div class="media">
         <div class="media-body">
             <h1 class="underline">Clubs in {{ user.username }}'s Bag:</h1>
-            <ul>
-            {% for club in user_clubs %}
-                <li class="clubs">{{ club.club_name }}</li>
-            {% endfor %}
-            </ul>
+            <!-- Table displaying registered club details -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Club</th>
+                        <th scope="col">Manufacturer</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Loft</th>
+                        <th scope="col">Added</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for club in user_clubs %}
+                    <tr>
+                        <td>{{ club.club_name }}</td>
+                        <td>{{ club.club_manufacturer }}</td>
+                        <td>{{ club.club_model }}</td>
+                        <td>{{ club.club_loft }}</td>
+                        <td>{{ club.date_added }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
     <form method="POST" enctype="multipart/form-data"> <!-- Added an encoding type to save the image in the background -->
         {% csrf_token %}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Add a Clubs to your bag</legend> <!-- Updated ledgend to display Profile Info -->
-            {{ c_form|crispy }} <!-- Updated to load the user form and let crispy take care of the formating -->
-
+            <legend class="border-bottom mb-4">Add a Club to your bag</legend> <!-- Updated legend to display Profile Info -->
+            {{ c_form|crispy }} <!-- Updated to load the user form and let crispy take care of the formatting -->
         </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Update</button> <!-- Updated button to display Profile Info -->
         </div>
     </form>
-
 </div>
 {% endblock content %}

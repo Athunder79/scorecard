@@ -9,8 +9,8 @@
 
 <h1 class="hole-heading">Hole <span id="current-hole">{{ hole_num }}</span></h1>
 {% if shot.shot_distance is not None or current_shot is 1 %}
-<h2 class="shot-heading">Shot &nbsp; {{ current_shot }}</h2>
-<h3 class="last-shot">Last Shot:&nbsp;&nbsp;{{shot.club}} &nbsp; {{ shot.shot_distance }}yrds</h3>
+<h2 class="shot-heading">Shot {{ current_shot }}</h2>
+<h3 class="last-shot">Last Shot:&nbsp;&nbsp;{{shot.club}}&nbsp;{{ shot.shot_distance }}yrds</h3>
 {% endif %}
 <!-- <h2>Par: {{ hole_par }}</h2>
 <h2>Hole Distance: {{ hole_distance }}</h2> -->
