@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Course(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255,null=False, blank=False)
+    name = models.CharField(max_length=255, null=False, blank=False)
     address = models.CharField(max_length=255)
     rating = models.FloatField(null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
@@ -19,6 +19,14 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.pk and Course.objects.filter(latitude=self.latitude, longitude=self.longitude).exists():
+            # If a course with the same latitude and longitude exists, do not save
+            print(f"Course with latitude {self.latitude} and longitude {self.longitude} already exists.")
+        else:
+            super(Course, self).save(*args, **kwargs)
+
 
 class Round(models.Model):
     id = models.AutoField(primary_key=True)
