@@ -23,7 +23,7 @@
                         <td>{{ club.club_manufacturer }}</td>
                         <td>{{ club.club_model }}</td>
                         <td>{{ club.club_loft }}</td>
-                        <td>{{ club.date_added }}</td>
+                        <td>{{ club.date_added|date:"d/M/y" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
