@@ -89,7 +89,15 @@
             center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
             shots: [
                 {% for shot in round_item.shot_set.all %}
-                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, endLat:{{shot.end_latitude}}, endLng:{{shot.end_longitude}}, title: 'Shot {{ forloop.counter }}', shotNum: "{{ shot.shot_num_per_hole|add:1 }}" }
+                {
+                    lat: {{ shot.latitude }},
+                    lng: {{ shot.longitude }},
+                    endLat: {{ shot.end_latitude }},
+                    endLng: {{ shot.end_longitude }},
+                    lastShot: {{ shot.last_shot_of_hole|yesno:"true,false" }},  // Convert to JavaScript boolean
+                    title: 'Shot {{ forloop.counter }}',
+                    shotNum: "{{ shot.shot_num_per_hole|add:1 }}"
+                }
                 {% if not forloop.last %},{% endif %}
                 {% endfor %}
             ]
@@ -100,6 +108,7 @@
 
     console.log(roundsData)
 </script>
+
 
 <!-- Load Google Maps JavaScript API -->
 <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initAllMaps"></script>
@@ -123,10 +132,20 @@
                 strokeWeight: 2,
             };
 
+            const flagMarker = {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: 'red',
+                fillOpacity: 1,
+                scale: 3,
+                strokeColor: 'red',
+                strokeWeight: 2,
+            };
+
             round.shots.forEach(shot => {
                 const startline = new google.maps.LatLng(parseFloat(shot.lat), parseFloat(shot.lng));
                 const endline = new google.maps.LatLng(parseFloat(shot.endLat), parseFloat(shot.endLng));
                 const position = { lat: shot.lat, lng: shot.lng };
+                const endPosition = { lat: shot.endLat, lng: shot.endLng };
 
                 // Create a marker for each shot
                 new google.maps.Marker({
@@ -139,7 +158,21 @@
                     },
                     map: map,
                     title: shot.title
+
+                
                 });
+
+                // check if last shot of hole
+                // TODO FIX THIS
+                if (shot.last_shot_of_hole != true) { 
+                    new google.maps.Marker({
+                        position: endPosition,
+                        icon: flagMarker,
+                        map: map,
+                        title: 'Hole End'
+                    });
+                }
+                
 
                 // Create a polyline for each shot
                 const polyline = new google.maps.Polyline({

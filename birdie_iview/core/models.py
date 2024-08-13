@@ -73,6 +73,7 @@ class Shot(models.Model):
     end_longitude = models.DecimalField(max_digits=9, decimal_places=7, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     shot_distance = models.DecimalField(max_digits=10, decimal_places=1, blank=True, null=True)
+    last_shot_of_hole = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('scorecard-create')

@@ -303,6 +303,7 @@ def next_hole(request, hole_id, course_id, round_id):
             shot.end_latitude = end_latitude
             shot.end_longitude = end_longitude
             shot.shot_distance = distance_rounded
+            shot.last_shot_of_hole = True
             shot.save()
 
     # check if it is the last hole of the round and update the round status and calculate the shot distance of the final shot
