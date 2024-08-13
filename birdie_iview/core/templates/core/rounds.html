@@ -89,7 +89,7 @@
             center: { lat: {{ round_item.shot_set.first.latitude }}, lng: {{ round_item.shot_set.first.longitude }} },
             shots: [
                 {% for shot in round_item.shot_set.all %}
-                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, title: 'Shot {{ forloop.counter }}', shotNum: "{{ shot.shot_num_per_hole|add:1 }}" }
+                { lat: {{ shot.latitude }}, lng: {{ shot.longitude }}, endLat:{{shot.end_latitude}}, endLng:{{shot.end_longitude}}, title: 'Shot {{ forloop.counter }}', shotNum: "{{ shot.shot_num_per_hole|add:1 }}" }
                 {% if not forloop.last %},{% endif %}
                 {% endfor %}
             ]
@@ -123,12 +123,12 @@
                 strokeWeight: 2,
             };
 
-            const shotPositions = [];
-
             round.shots.forEach(shot => {
+                const startline = new google.maps.LatLng(parseFloat(shot.lat), parseFloat(shot.lng));
+                const endline = new google.maps.LatLng(parseFloat(shot.endLat), parseFloat(shot.endLng));
                 const position = { lat: shot.lat, lng: shot.lng };
-                shotPositions.push(position);
 
+                // Create a marker for each shot
                 new google.maps.Marker({
                     position: position,
                     icon: customMarker,
@@ -140,21 +140,22 @@
                     map: map,
                     title: shot.title
                 });
-            });
 
-            // Create the polyline between shots
-            const polyline = new google.maps.Polyline({
-                path: shotPositions,
-                geodesic: true,
-                strokeColor: 'yellow',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
+                // Create a polyline for each shot
+                const polyline = new google.maps.Polyline({
+                    path: [startline, endline],
+                    geodesic: true,
+                    strokeColor: 'yellow',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
 
-            polyline.setMap(map);
+                polyline.setMap(map);
+            });
         });
     }
 </script>
+
 
 {% endif %}
 {% endblock %}
