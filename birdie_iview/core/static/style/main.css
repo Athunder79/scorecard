@@ -10,7 +10,9 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
-
+.no-shadow {
+  box-shadow: none;
+}
 .bg-nav {
   background-color: #288abb;
 }
@@ -27,6 +29,19 @@ body {
   font-weight: 500;
 }
 
+.underpar1 {
+  display: block;
+  margin: 0 auto;
+  /* border-radius: 50%; */
+  width: 100%;
+  height: 100%;
+  /* padding: 1px; */
+  /* background: #fff; */
+  border: 2px solid #857a7a;
+  color: #666;
+  text-align: center;
+}
+
 .lead {
   color: #ffffff;
 }
@@ -41,6 +56,10 @@ body {
 .highlight {
   background-color: #d51c1c;
   color: white;
+  border-radius: 5px;
+  padding-left: 2px;
+  padding-right: 2px;
+
 }
 
 /* alert messages override bootstrap */
