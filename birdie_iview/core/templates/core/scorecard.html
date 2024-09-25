@@ -116,7 +116,7 @@
             <tr>
                 <td>Scr</td>
                 {% for hole in holes|slice:":9" %}
-                <td id="scor{{ hole.hole_num }}">{{ hole.shot_count }}</td>
+                <td id="scor{{ hole.hole_num }}"><span id="indicator{{ hole.hole_num }}">{{ hole.shot_count }}</span></td>
                 {% endfor %}
 
                 <td id="totalFrontScor">{{ in_total_shots }}</td>

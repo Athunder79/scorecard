@@ -131,8 +131,10 @@ function colourCells() {
   for (let i = 1; i <= hole; i++) 
   if (parseInt(document.getElementById("scor" + i).innerText) > parseInt(document.getElementById("par" + i).innerText)) {
       document.getElementById("scor" + i).className = "overpar";
+      document.getElementById("indicator" + i).className = "overpar1";
   } else if (parseInt(document.getElementById("scor" + i).innerText) < parseInt(document.getElementById("par" + i).innerText)) {
       document.getElementById("scor" + i).className = "underpar";
+      document.getElementById("indicator" + i).className = "underpar1";
   } else {
       document.getElementById("scor" + i).className = "par";
   }

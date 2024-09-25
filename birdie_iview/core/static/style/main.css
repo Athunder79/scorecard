@@ -32,12 +32,24 @@ body {
 .underpar1 {
   display: block;
   margin: 0 auto;
-  /* border-radius: 50%; */
-  width: 100%;
-  height: 100%;
+  border-radius: 50%;
+  width: 19px;
+  height: 19px;
   /* padding: 1px; */
   /* background: #fff; */
-  border: 2px solid #857a7a;
+  border: 1px solid #288abb;
+  color: #666;
+  text-align: center;
+}
+
+.overpar1 {
+  display: block;
+  margin: 0 auto;
+  width: 19px;
+  height: 19px;
+  /* padding: 1px; */
+  /* background: #fff; */
+  border: 1px solid #288abb;
   color: #666;
   text-align: center;
 }
@@ -120,7 +132,7 @@ body {
 }
 
 .overpar {
-  background-color: #c96666;
+  background-color: #f0a7a7;
 }
 
 caption {
