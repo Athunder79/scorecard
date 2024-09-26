@@ -95,7 +95,6 @@ body {
 }
 
 .content-section {
-  /* add shadow  */
   box-shadow: 0 4px 10px #050505;
   background: #ffffff;
   padding: 10px 20px;
