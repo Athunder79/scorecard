@@ -94,9 +94,12 @@
                     lng: {{ shot.longitude }},
                     endLat: {{ shot.end_latitude }},
                     endLng: {{ shot.end_longitude }},
-                    lastShot: {{ shot.last_shot_of_hole|yesno:"true,false" }},  // Convert to JavaScript boolean
+                    lastShot: {{ shot.last_shot_of_hole|yesno:"true,false" }},
                     title: 'Shot {{ forloop.counter }}',
-                    shotNum: "{{ shot.shot_num_per_hole|add:1 }}"
+                    shotNum: "{{ shot.shot_num_per_hole|add:1 }}",
+                    holeNum: "{{ shot.hole_num }}",
+                    club: "{{ shot.club.club_name }}",
+                    distance: "{{ shot.shot_distance|floatformat:"0" }}"
                 }
                 {% if not forloop.last %},{% endif %}
                 {% endfor %}
@@ -122,7 +125,6 @@
                 center: round.center,
             });
 
-            // Define a custom marker icon
             const customMarker = {
                 path: google.maps.SymbolPath.CIRCLE,
                 fillColor: 'blue',
@@ -148,23 +150,39 @@
                 const endPosition = { lat: shot.endLat, lng: shot.endLng };
 
                 // Create a marker for each shot
-                new google.maps.Marker({
+                const marker = new google.maps.Marker({
                     position: position,
                     icon: customMarker,
                     label: {
-                        text: shot.shotNum, // Shot number as label text
-                        color: 'white', // Label text color
-                        fontSize: '12px', // Label font size
+                        text: shot.shotNum,
+                        color: 'white',
+                        fontSize: '12px',
                     },
                     map: map,
                     title: shot.title
-
-                
                 });
 
-                // check if last shot of hole
-                // TODO FIX THIS
-                if (shot.last_shot_of_hole != true) { 
+                // InfoWindow with extra details
+                const contentString = `
+                    <div style="min-width:180px">
+                        <h4>Shot ${shot.shotNum}</h4>
+                        <p><b>Hole:</b> ${shot.holeNum}</p>
+                        <p><b>Club:</b> ${shot.club}</p>
+                        <p><b>Distance:</b> ${shot.distance} yds</p>
+                        ${shot.lastShot ? "<p><b>Final shot of hole</b></p>" : ""}
+                    </div>
+                `;
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: contentString,
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+
+                // Add end flag marker if not last shot
+                if (!shot.lastShot) {
                     new google.maps.Marker({
                         position: endPosition,
                         icon: flagMarker,
@@ -172,9 +190,8 @@
                         title: 'Hole End'
                     });
                 }
-                
 
-                // Create a polyline for each shot
+                // Draw polyline for shot
                 const polyline = new google.maps.Polyline({
                     path: [startline, endline],
                     geodesic: true,
@@ -188,7 +205,6 @@
         });
     }
 </script>
-
 
 {% endif %}
 {% endblock %}
