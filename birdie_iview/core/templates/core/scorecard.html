@@ -39,6 +39,36 @@
         <input type="hidden" id="end_shot_latitude" name="end_shot_latitude" value="">
         <input type="hidden" id="end_shot_longitude" name="end_shot_longitude" value="">
         <button id="at-my-ball" class="btn btn-primary at-ball-button" type="button">I'm at my ball</button>
+                       <!--  Miss type checkboxes -->
+<fieldset class="form-group mb-3 text-center miss-type">
+    <legend class="small fw-bold mb-2 toggle-miss-type" style="cursor: pointer;">
+        Tag Shot <span class="arrow">▼</span>
+    </legend>
+    <div class="miss-type-options d-none">
+        <div class="d-flex justify-content-center flex-wrap gap-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="miss_type" value="long" id="missLong">
+                <label class="form-check-label" for="missLong">Long</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="miss_type" value="short" id="missShort">
+                <label class="form-check-label" for="missShort">Short</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="miss_type" value="left" id="missLeft">
+                <label class="form-check-label" for="missLeft">Left</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="miss_type" value="right" id="missRight">
+                <label class="form-check-label" for="missRight">Right</label>
+            </div>
+                        <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="miss_type" value="Fairway" id="Fairway">
+                <label class="form-check-label" for="Fairway">Fairway</label>
+            </div>
+        </div>
+    </div>
+</fieldset>
     </div>
     <br>
 </form>

@@ -57,6 +57,7 @@
                         <th class="stats-th" scope="col">Hole/Shot</th>
                         <th class="stats-th" scope="col">Club</th>
                         <th class="stats-th" scope="col">Dist</th>
+                        <th class="stats-th" scope="col">Tag</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,6 +69,19 @@
                         <td>{{ shot.shot_num_per_hole|add:1 }}</td>
                         <td>{{ shot.club.club_name }}</td>
                         <td>{{ shot.shot_distance|floatformat:"0" }}</td>
+
+    <td>       {% if shot.get_miss_types_list %}
+            {% for tag in shot.get_miss_types_list %}
+                {% if tag == "Fairway" or tag == "Green" %}
+                    <span class="badge bg-success">🟢 {{ tag|capfirst }}</span>
+                {% else %}
+                    <span class="badge bg-danger">🔴 {{ tag|capfirst }}</span>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <span class="badge bg-success">🟢 On Target</span>
+        {% endif %}</td>
+                        
                     </tr>
                     {% endfor %}
                 </tbody>

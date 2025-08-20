@@ -414,3 +414,40 @@ map {
 
 
 }
+
+.miss-type {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 10px;
+    max-width: 400px;
+    margin: 0 auto 15px auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.miss-type legend {
+    font-size: 1rem;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+}
+
+.miss-type .form-check-input {
+    transform: scale(1.2);
+    margin-right: 6px;
+}
+
+.miss-type .form-check-label {
+    font-weight: 500;
+}
+
+.miss-type .arrow {
+    font-size: 0.9rem;
+    margin-left: 5px;
+    transition: transform 0.2s ease;
+}
+
+.miss-type.open .arrow {
+    transform: rotate(180deg); /* flip arrow when open */
+}

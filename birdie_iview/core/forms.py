@@ -6,10 +6,11 @@ from .models import Shot, Round, Course, Hole ,Clubs
 
 
 class ShotForm(forms.ModelForm):
+
     class Meta:
         model = Shot
         fields = ['latitude', 'longitude', 'club']
-    
+
     def __init__(self, user, *args, **kwargs):
         super(ShotForm, self).__init__(*args, **kwargs)
         self.fields['club'].queryset = Clubs.objects.filter(user=user)
@@ -20,8 +21,9 @@ class ShotForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('latitude', id='latitude', css_class='hide-input'),
             Field('longitude', id='longitude', css_class='hide-input'),
-            Field('club', id='club', css_class='custom-select', label=''),  
+            Field('club', id='club', css_class='custom-select', label=''),
         )
+
 
 class HideInput(forms.widgets.Input):
     input_type = 'hidden'
