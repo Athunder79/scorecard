@@ -69,18 +69,18 @@
                         <td>{{ shot.shot_num_per_hole|add:1 }}</td>
                         <td>{{ shot.club.club_name }}</td>
                         <td>{{ shot.shot_distance|floatformat:"0" }}</td>
-
-    <td>       {% if shot.get_miss_types_list %}
-            {% for tag in shot.get_miss_types_list %}
-                {% if tag == "Fairway" or tag == "Green" %}
-                    <span class="badge bg-success">🟢 {{ tag|capfirst }}</span>
-                {% else %}
-                    <span class="badge bg-danger">🔴 {{ tag|capfirst }}</span>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <span class="badge bg-success">🟢 On Target</span>
-        {% endif %}</td>
+                        <td>       
+                        {% if shot.get_miss_types_list %}
+                            {% for tag in shot.get_miss_types_list %}
+                                {% if tag == "Fairway" or tag == "Green" %}
+                                    <span class="badge bg-success">🟢 {{ tag|capfirst }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">🔴 {{ tag|capfirst }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <span class="badge bg-success">🟢 On Target</span>
+                        {% endif %}</td>
                         
                     </tr>
                     {% endfor %}
@@ -113,7 +113,16 @@
                     shotNum: "{{ shot.shot_num_per_hole|add:1 }}",
                     holeNum: "{{ shot.hole_num }}",
                     club: "{{ shot.club.club_name }}",
-                    distance: "{{ shot.shot_distance|floatformat:"0" }}"
+                    distance: "{{ shot.shot_distance|floatformat:"0" }}",
+                    shotTags: [
+                            {% if shot.get_miss_types_list %}
+                                {% for tag in shot.get_miss_types_list %}
+                                    "{{ tag }}"{% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                            {% else %}
+                                "On Target"
+                            {% endif %}
+                                    ]
                 }
                 {% if not forloop.last %},{% endif %}
                 {% endfor %}
@@ -176,24 +185,30 @@
                     title: shot.title
                 });
 
-                // InfoWindow with extra details
-                const contentString = `
-                    <div style="min-width:180px">
-                        <h4>Shot ${shot.shotNum}</h4>
-                        <p><b>Hole:</b> ${shot.holeNum}</p>
-                        <p><b>Club:</b> ${shot.club}</p>
-                        <p><b>Distance:</b> ${shot.distance} yds</p>
-                        {% if shot.get_miss_types_list %}
-            {% for tag in shot.get_miss_types_list %}
-                {% if tag == "Fairway" or tag == "Green" %}
-                    <span class="badge bg-success">🟢 {{ tag|capfirst }}</span>
-                {% else %}
-                    <span class="badge bg-danger">🔴 {{ tag|capfirst }}</span>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <span class="badge bg-success">🟢 On Target</span>
-        {% endif %}
+                            // Build badges for shot tags
+            const tagsHtml = shot.shotTags && shot.shotTags.length
+                ? shot.shotTags.map(tag => {
+                    if (tag === 'Fairway' || tag === 'Green') {
+                        return `<span style="background-color:#28a745;color:white;padding:2px 6px;border-radius:4px;margin-right:2px;">🟢 ${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`;
+                    } else {
+                        return `<span style="background-color:#dc3545;color:white;padding:2px 6px;border-radius:4px;margin-right:2px;">🔴 ${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`;
+                    }
+                }).join(' ')
+                : `<span style="background-color:#28a745;color:white;padding:2px 6px;border-radius:4px;">🟢 On Target</span>`;
+
+            // InfoWindow with extra details
+            const contentString = `
+                <div style="min-width:200px">
+                    <h4>Shot ${shot.shotNum}</h4>
+                    <p><b>Hole:</b> ${shot.holeNum}</p>
+                    <p><b>Club:</b> ${shot.club}</p>
+                    <p><b>Distance:</b> ${shot.distance} yds</p>
+                    <p>${tagsHtml}</p>
+                    ${shot.lastShot ? "<p><b>Final shot of hole</b></p>" : ""}
+                        
+
+
+                        
                         ${shot.lastShot ? "<p><b>Final shot of hole</b></p>" : ""}
                     </div>
                 `;
