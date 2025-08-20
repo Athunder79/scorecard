@@ -183,6 +183,17 @@
                         <p><b>Hole:</b> ${shot.holeNum}</p>
                         <p><b>Club:</b> ${shot.club}</p>
                         <p><b>Distance:</b> ${shot.distance} yds</p>
+                        {% if shot.get_miss_types_list %}
+            {% for tag in shot.get_miss_types_list %}
+                {% if tag == "Fairway" or tag == "Green" %}
+                    <span class="badge bg-success">🟢 {{ tag|capfirst }}</span>
+                {% else %}
+                    <span class="badge bg-danger">🔴 {{ tag|capfirst }}</span>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <span class="badge bg-success">🟢 On Target</span>
+        {% endif %}
                         ${shot.lastShot ? "<p><b>Final shot of hole</b></p>" : ""}
                     </div>
                 `;
