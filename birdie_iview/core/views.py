@@ -220,8 +220,8 @@ def end_of_shot(request, hole_id, course_id, round_id):
     if request.method == 'POST':
         end_latitude = request.POST.get('end_shot_latitude')
         end_longitude = request.POST.get('end_shot_longitude')
-        miss_type_list = request.POST.getlist('miss_type')  # ✅ get multiple values
-        miss_type = ",".join(miss_type_list) if miss_type_list else None
+        shot_result_list = request.POST.getlist('shot_result')  # ✅ get multiple values
+        shot_result = ",".join(shot_result_list) if shot_result_list else None
 
         if end_latitude is None or end_longitude is None:
             # Handle case where end coordinates are not provided
@@ -251,7 +251,7 @@ def end_of_shot(request, hole_id, course_id, round_id):
             shot.end_latitude = end_latitude
             shot.end_longitude = end_longitude
             shot.shot_distance = distance_rounded
-            shot.miss_type = miss_type
+            shot.shot_result = shot_result
             shot.save()
         else:
             # Handle case where start coordinates are not available

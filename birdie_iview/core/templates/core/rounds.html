@@ -70,8 +70,8 @@
                         <td>{{ shot.club.club_name }}</td>
                         <td>{{ shot.shot_distance|floatformat:"0" }}</td>
                         <td>       
-                        {% if shot.get_miss_types_list %}
-                            {% for tag in shot.get_miss_types_list %}
+                        {% if shot.get_shot_results_list %}
+                            {% for tag in shot.get_shot_results_list %}
                                 {% if tag == "Fairway" or tag == "Green" %}
                                     <span class="badge bg-success">🟢 {{ tag|capfirst }}</span>
                                 {% else %}
@@ -115,8 +115,8 @@
                     club: "{{ shot.club.club_name }}",
                     distance: "{{ shot.shot_distance|floatformat:"0" }}",
                     shotTags: [
-                            {% if shot.get_miss_types_list %}
-                                {% for tag in shot.get_miss_types_list %}
+                            {% if shot.get_shot_results_list %}
+                                {% for tag in shot.get_shot_results_list %}
                                     "{{ tag }}"{% if not forloop.last %},{% endif %}
                                 {% endfor %}
                             {% else %}
