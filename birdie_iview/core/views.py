@@ -497,3 +497,18 @@ class HoleCreateView(CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+@login_required
+def delete_round(request, round_id):
+    round_obj = get_object_or_404(Round, pk=round_id)
+
+    if round_obj.user != request.user:
+        return HttpResponseForbidden("You don't have permission to delete this round.")
+
+    if request.method == "POST":  # only allow deletion via POST
+        round_obj.delete()
+        messages.success(request, "Round deleted successfully.")
+        return redirect('core-home')
+
+    # if it's a GET, show a confirmation page
+    return render(request, 'core/confirm_delete_round.html', {"round": round_obj})

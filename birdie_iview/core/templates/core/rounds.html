@@ -45,7 +45,7 @@
 
 {% for round_item in round %}
 <div class="content-section">
-    <h3 class="round-heading"><strong>Show/Hide &nbsp;&nbsp;&nbsp;&nbsp; {{ round_item.course }}<span class="table-head-right">{{ round_item.round_date|date:"d-M-Y" }}</span></strong></h3>
+    <h3 class="round-heading"><strong>Show/Hide &nbsp;&nbsp;&nbsp;&nbsp; {{ round_item.course }}&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'delete-round' round_item.id %}" class="warning">Delete Round</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'scorecard' round_item.id %}" class="warning">Resume Round</a><span class="table-head-right">{{ round_item.round_date|date:"d-M-Y" }}</span></strong></h3>
     <div class="content-section round-details hide">
         <div id="round-{{ round_item.id }}" class="table-responsive">
             <table id="round-body" class="table">
@@ -53,8 +53,9 @@
                     <tr>
                         <th class="stats-th" scope="col">#</th>
                         <th class="stats-th" scope="col">Hole</th>
-                        <th class="stats-th" scope="col">Par</th>
+    
                         <th class="stats-th" scope="col">Hole/Shot</th>
+                        <th class="stats-th" scope="col">Par</th>
                         <th class="stats-th" scope="col">Club</th>
                         <th class="stats-th" scope="col">Dist</th>
                         <th class="stats-th" scope="col">Tag</th>
@@ -65,8 +66,8 @@
                     <tr>
                         <th class="stats-th" scope="row">{{ forloop.counter }}</th>
                         <td>{{ shot.hole_num }}</td>
-                        <td>{{ shot.hole_par }}</td>
                         <td>{{ shot.shot_num_per_hole|add:1 }}</td>
+                        <td>{{ shot.hole_par }}</td>
                         <td>{{ shot.club.club_name }}</td>
                         <td>{{ shot.shot_distance|floatformat:"0" }}</td>
                         <td>       
@@ -204,12 +205,7 @@
                     <p><b>Club:</b> ${shot.club}</p>
                     <p><b>Distance:</b> ${shot.distance} yds</p>
                     <p>${tagsHtml}</p>
-                    ${shot.lastShot ? "<p><b>Final shot of hole</b></p>" : ""}
-                        
-
-
-                        
-                        ${shot.lastShot ? "<p><b>Final shot of hole</b></p>" : ""}
+                    ${shot.lastShot ? "<p><b>In The Hole!</b></p>" : ""}
                     </div>
                 `;
 

@@ -14,7 +14,7 @@ urlpatterns = [
     path('rounds/', ScoreListView.as_view(), name='rounds'),
     path('finish-round/<int:round_id>/', views.finish_round, name='finish-round'),
     path('end-of-shot/<int:course_id>/<int:round_id>/<int:hole_id>/', views.end_of_shot, name='end-of-shot'),
-    
+    path('round/<int:round_id>/delete/', views.delete_round, name='delete-round'),    
 
     
 ]

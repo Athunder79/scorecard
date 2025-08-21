@@ -1,0 +1,13 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="content-section">
+    <h3>Delete Round</h3>
+    <p>Are you sure you want to delete your round at <strong>{{ round.course.name }}</strong> played on {{ round.round_date|date:"M d, Y" }}?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'scorecard' round.hole_set.first.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
