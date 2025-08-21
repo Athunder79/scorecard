@@ -188,7 +188,7 @@
                             // Build badges for shot tags
             const tagsHtml = shot.shotTags && shot.shotTags.length
                 ? shot.shotTags.map(tag => {
-                    if (tag === 'Fairway' || tag === 'Green') {
+                    if (tag === 'Fairway' || tag === 'Green' || tag === 'On Target') {
                         return `<span style="background-color:#28a745;color:white;padding:2px 6px;border-radius:4px;margin-right:2px;">🟢 ${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`;
                     } else {
                         return `<span style="background-color:#dc3545;color:white;padding:2px 6px;border-radius:4px;margin-right:2px;">🔴 ${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`;
