@@ -52,9 +52,8 @@
                 <thead class="stats-th">
                     <tr>
                         <th class="stats-th" scope="col">#</th>
+                         <th class="stats-th" scope="col">Hole/Shot</th>
                         <th class="stats-th" scope="col">Hole</th>
-    
-                        <th class="stats-th" scope="col">Hole/Shot</th>
                         <th class="stats-th" scope="col">Par</th>
                         <th class="stats-th" scope="col">Club</th>
                         <th class="stats-th" scope="col">Dist</th>
@@ -65,8 +64,8 @@
                     {% for shot in round_item.shot_set.all %}
                     <tr>
                         <th class="stats-th" scope="row">{{ forloop.counter }}</th>
-                        <td>{{ shot.hole_num }}</td>
                         <td>{{ shot.shot_num_per_hole|add:1 }}</td>
+                        <td>{{ shot.hole_num }}</td>
                         <td>{{ shot.hole_par }}</td>
                         <td>{{ shot.club.club_name }}</td>
                         <td>{{ shot.shot_distance|floatformat:"0" }}</td>
