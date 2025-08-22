@@ -27,15 +27,21 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-nav fixed-top">
     <div class="container">
       <a class="navbar-brand text-white" href="{% url 'core-home' %}">Birdies iView </a>
-{% if incomplete_rounds_info %}
+      {% if user.is_authenticated and incomplete_rounds_info %}
+      <ul class="navbar-nav">
+        <li class="nav-item highlight">
+          {% if incomplete_rounds_info %}
   <a href="{{ incomplete_rounds_info.redirect_url }}" class="btn btn-primary">
     {% if incomplete_rounds_info.type == "hole-details" %}
       Continue to Next Hole
     {% elif incomplete_rounds_info.type == "scorecard" %}
-      Resume Current Hole
+      Return to Current Hole
     {% endif %}
   </a>
 {% endif %}
+        </li>
+      </ul>
+      {% endif %}
       <button class="navbar-toggler no-shadow white navbar-dark " type="button" data-bs-toggle="collapse"
         data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon "></span>
