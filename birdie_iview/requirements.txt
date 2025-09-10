@@ -1,7 +1,7 @@
 crispy-bootstrap5==2023.10
 dj-database-url==2.1.0
 django-crispy-forms==2.1
-Django==4.2.15
+Django==5.2.6
 gunicorn==21.2.0
 Pillow==10.1.0
 psycopg2==2.9.7
